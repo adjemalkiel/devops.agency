@@ -4927,7 +4927,7 @@ const aiBlockObserver = new IntersectionObserver((entries) => {
 // AI Block 3D scroll control
 const aiBlock3DObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-        const iframe = entry.target.querySelector('iframe[src="ai-3d.html"]');
+        const iframe = entry.target.querySelector('iframe[data-ai-3d="embed"]');
         if (!iframe) return;
 
         if (entry.isIntersecting) {

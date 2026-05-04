@@ -5,9 +5,13 @@ type LegacyHomePageProps = {
   markup: string
   /** BCP 47 language tag for &lt;html lang&gt; while this route is mounted */
   documentLang: string
+  /** When set, used as document.title instead of the default home titles */
+  pageTitle?: string
+  /** Runs after markup is injected; safe to call on SPA navigations without re-injecting HTML */
+  onAfterInject?: (host: HTMLDivElement) => void
 }
 
-export function LegacyHomePage({ markup, documentLang }: LegacyHomePageProps) {
+export function LegacyHomePage({ markup, documentLang, pageTitle, onAfterInject }: LegacyHomePageProps) {
   const hostRef = useRef<HTMLDivElement>(null)
 
   useLayoutEffect(() => {
@@ -17,7 +21,9 @@ export function LegacyHomePage({ markup, documentLang }: LegacyHomePageProps) {
     const previousLang = document.documentElement.getAttribute('lang')
     const previousTitle = document.title
     document.documentElement.lang = documentLang
-    if (documentLang === 'fr') {
+    if (pageTitle != null && pageTitle !== '') {
+      document.title = pageTitle
+    } else if (documentLang === 'fr') {
       document.title = 'DevOps Agency | Infrastructure cloud, CI/CD & plateforme'
     } else {
       document.title = 'DevOps Agency | Cloud infrastructure, CI/CD & platform engineering'
@@ -41,7 +47,13 @@ export function LegacyHomePage({ markup, documentLang }: LegacyHomePageProps) {
       }
       document.title = previousTitle
     }
-  }, [markup, documentLang])
+  }, [markup, documentLang, pageTitle])
+
+  useLayoutEffect(() => {
+    const el = hostRef.current
+    if (!el || !markup.trim()) return
+    onAfterInject?.(el)
+  }, [markup, onAfterInject])
 
   return <div ref={hostRef} className="legacy-home-root" />
 }
