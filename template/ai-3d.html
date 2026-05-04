@@ -1,0 +1,325 @@
+<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="canonical" href="https://redstone.software/ai-3d.html" />
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <title>KeyShotXR</title>
+    <meta name="description"
+          content="Learn how AI is transforming 3D design, from automated modeling to realistic rendering, enhancing creativity and efficiency in digital projects.">
+
+    <style type="text/css">
+        body {
+            -ms-touch-action: auto;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 1199px) {
+            #KeyShotXR {
+                touch-action: auto !important;
+                pointer-events: none !important;
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                user-select: none;
+            }
+        }
+
+        /* Desktop optimizations */
+        @media (min-width: 1200px) {
+            #KeyShotXR {
+                touch-action: none;
+                cursor: grab;
+            }
+
+            #KeyShotXR.dragging {
+                cursor: grabbing;
+            }
+        }
+
+        /* Prevent iOS bounce scroll during 3D interaction */
+        .prevent-scroll {
+            position: fixed;
+            overflow: hidden;
+            width: 100%;
+        }
+    </style>
+    <script type="text/javascript" src="models-3d/files/KeyShotXR.js"></script>
+    <script type="text/javascript">
+        // Global variables for 3D model control
+        var keyshotXR;
+        var scrollControlEnabled = true;
+        var userInteracting = false;
+        var scrollTimeout;
+        var isMobile =
+            window.innerWidth < 1200 ||
+            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+                navigator.userAgent,
+            );
+        var touchStartY = 0;
+        var isTouching = false;
+        var lastFrameIndex = 0; // Track last frame to prevent jumps
+
+        function initKeyShotXR() {
+            // KeyShotXR configuration parameters
+            var nameOfDiv = "KeyShotXR";
+            var folderName = "models-3d";
+
+            // Responsive viewport dimensions - mobile if width < 1200px
+            var viewPortWidth = isMobile ? Math.min(window.innerWidth, 1000) : 1003;
+            var viewPortHeight = isMobile
+                ? Math.min(window.innerHeight, 1000)
+                : 1044;
+
+            var backgroundColor = "transparent";
+            var uCount = 68; // Number of horizontal rotation frames
+            var vCount = 1; // Number of vertical rotation frames
+            var uWrap = true;
+            var vWrap = false;
+
+            // Adjust sensitivity for mobile
+            var uMouseSensitivity = isMobile ? -0.05 : -0.0916667;
+            var vMouseSensitivity = isMobile ? 0.5 : 1;
+            var uStartIndex = 0;
+            var vStartIndex = 0;
+            var minZoom = 1;
+            var maxZoom = 1;
+            var rotationDamping = 0.96;
+            var downSvaroBrowser = true;
+            var addDownScaleGUIButton = false;
+            var downloadOnInteraction = false;
+            var imageExtension = "jpg";
+            var showLoading = false;
+            var allowFullscreen = true;
+            var uReverse = false;
+            var vReverse = false;
+            var hotspots = {};
+            var isIBooksWidget = false;
+
+            keyshotXR = new keyshotXR(
+                nameOfDiv,
+                folderName,
+                viewPortWidth,
+                viewPortHeight,
+                backgroundColor,
+                uCount,
+                vCount,
+                uWrap,
+                vWrap,
+                uMouseSensitivity,
+                vMouseSensitivity,
+                uStartIndex,
+                vStartIndex,
+                minZoom,
+                maxZoom,
+                rotationDamping,
+                downSvaroBrowser,
+                addDownScaleGUIButton,
+                downloadOnInteraction,
+                imageExtension,
+                showLoading,
+                allowFullscreen,
+                uReverse,
+                vReverse,
+                hotspots,
+                isIBooksWidget,
+            );
+
+            // Setup scroll control after KeyShotXR initialization
+            setupScrollControl();
+
+            // Handle orientation change and window resize for mobile detection
+            window.addEventListener("orientationchange", function () {
+                setTimeout(function () {
+                    // Update mobile detection on orientation change
+                    isMobile =
+                        window.innerWidth < 1200 ||
+                        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+                            navigator.userAgent,
+                        );
+
+                    if (keyshotXR && keyshotXR.resize) {
+                        keyshotXR.resize();
+                    }
+                }, 100);
+            });
+
+            // Handle window resize for responsive behavior
+            window.addEventListener("resize", function () {
+                // Update mobile detection on resize
+                isMobile =
+                    window.innerWidth < 1200 ||
+                    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+                        navigator.userAgent,
+                    );
+            });
+        }
+
+        function setupScrollControl() {
+            // Listen for scroll messages from parent page
+            window.addEventListener("message", function (event) {
+                if (event.data.type === "scroll" && scrollControlEnabled) {
+                    handleScrollControl(event.data.scrollProgress);
+                }
+            });
+
+            // Track user interaction with 3D model (desktop only)
+            var keyshotDiv = document.getElementById("KeyShotXR");
+            if (keyshotDiv && !isMobile) {
+                // Desktop mouse events for manual rotation
+                keyshotDiv.addEventListener("mousedown", function () {
+                    // User started manual interaction - disable scroll control
+                    userInteracting = true;
+                    scrollControlEnabled = false;
+                });
+
+                document.addEventListener("mouseup", function () {
+                    if (userInteracting) {
+                        // User stopped interacting - re-enable scroll control after delay
+                        userInteracting = false;
+                        clearTimeout(scrollTimeout);
+                        scrollTimeout = setTimeout(function () {
+                            scrollControlEnabled = true;
+                        }, 2000); // Re-enable after 2 seconds of inactivity
+                    }
+                });
+            }
+        }
+
+        function handleScrollControl(scrollProgress) {
+            if (keyshotXR && scrollControlEnabled) {
+                // Check for reduced motion preference
+                const prefersReducedMotion =
+                    window.matchMedia &&
+                    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+                if (prefersReducedMotion) {
+                    return; // Skip animation for users who prefer reduced motion
+                }
+
+                // Ensure scroll progress is always between 0 and 1
+                scrollProgress = Math.max(0, Math.min(1, scrollProgress));
+
+                // Get total number of frames (default to 68 if property not found)
+                var totalFrames = keyshotXR.P || 68;
+
+                // Direct linear mapping for consistent speed across all scroll ranges
+                var targetFrame = scrollProgress * (totalFrames - 1);
+                var frameIndex = Math.round(targetFrame);
+
+                // Strict bounds checking
+                frameIndex = Math.max(0, Math.min(totalFrames - 1, frameIndex));
+
+                // Mobile-specific smooth transition to prevent jarring jumps
+                if (
+                    isMobile &&
+                    lastFrameIndex !== null &&
+                    lastFrameIndex !== undefined
+                ) {
+                    var frameDiff = frameIndex - lastFrameIndex;
+                    var maxJump = 1; // Limit to 1 frame per update for very smooth animation
+
+                    // Gradually move towards target frame
+                    if (Math.abs(frameDiff) > maxJump) {
+                        if (frameDiff > 0) {
+                            frameIndex = lastFrameIndex + maxJump;
+                        } else {
+                            frameIndex = lastFrameIndex - maxJump;
+                        }
+                        frameIndex = Math.max(0, Math.min(totalFrames - 1, frameIndex));
+                    }
+                }
+
+                // Update frame only if changed to avoid unnecessary operations
+                if (keyshotXR.r !== frameIndex) {
+                    keyshotXR.r = frameIndex;
+                    keyshotXR.s = 0;
+                    lastFrameIndex = frameIndex;
+
+                    // Directly update the displayed image
+                    try {
+                        var container = keyshotXR.h;
+                        if (container) {
+                            var displayImg = container.querySelector("img");
+
+                            // Try to use preloaded images from different KeyShotXR properties
+                            if (keyshotXR.D && keyshotXR.D[frameIndex] && displayImg) {
+                                displayImg.src = keyshotXR.D[frameIndex];
+                                displayImg.style.display = "block";
+                                displayImg.style.opacity = "1";
+                            } else if (
+                                keyshotXR.G &&
+                                keyshotXR.G[frameIndex] &&
+                                displayImg
+                            ) {
+                                var preloadedImg = keyshotXR.G[frameIndex];
+                                if (preloadedImg && preloadedImg.src) {
+                                    displayImg.src = preloadedImg.src;
+                                    displayImg.style.display = "block";
+                                    displayImg.style.opacity = "1";
+                                }
+                            }
+                        }
+                    } catch (error) {
+                        // Silently handle any errors during image update
+                    }
+                }
+            }
+        }
+
+        // Easing function for smooth animation transitions
+        function easeOutCubic(t) {
+            // Более плавное easing для устранения скачков
+            return 1 - Math.pow(1 - t, 2);
+        }
+
+        // Улучшенная функция для плавного перехода между кадрами
+        function smoothFrameTransition(currentFrame, targetFrame, totalFrames) {
+            const directDistance = Math.abs(targetFrame - currentFrame);
+            const wrapDistance = totalFrames - directDistance;
+
+            if (wrapDistance < directDistance) {
+                if (targetFrame < currentFrame) {
+                    return targetFrame + totalFrames;
+                } else {
+                    return targetFrame - totalFrames;
+                }
+            }
+
+            return targetFrame;
+        }
+
+        // Throttle function for performance optimization
+        function throttle(func, delay) {
+            let timeoutId;
+            let lastExecTime = 0;
+            return function (...args) {
+                const currentTime = Date.now();
+
+                if (currentTime - lastExecTime > delay) {
+                    func.apply(this, args);
+                    lastExecTime = currentTime;
+                } else {
+                    clearTimeout(timeoutId);
+                    timeoutId = setTimeout(
+                        () => {
+                            func.apply(this, args);
+                            lastExecTime = Date.now();
+                        },
+                        delay - (currentTime - lastExecTime),
+                    );
+                }
+            };
+        }
+
+        // Initialize KeyShotXR when page loads
+        window.onload = initKeyShotXR;
+    </script>
+</head>
+
+<body oncontextmenu="return false;">
+<div id="KeyShotXR"></div>
+</body>
+</html>

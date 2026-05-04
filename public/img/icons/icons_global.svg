@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+    <symbol id="arrow-left" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" fill="none">
+        <path d="M3.41311 14.1173L25.5495 14.1173" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+        <path d="M12.0749 23.7417L2.45041 14.1172L12.0749 4.49271" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+    </symbol>
+    
+    <symbol id="arrow-right" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none">
+        <path d="M2.92607 12.1004L21.9001 12.1004" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+        <path d="M10.3506 20.3501L2.10101 12.1005L10.3506 3.85094" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+    </symbol>
+
+    <symbol id="arrow-right-bottom" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none">
+        <path d="M15.3477 14.9052L4.1671 3.72461" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+        <path d="M15.834 5.66992L15.834 15.3921L6.11176 15.3921" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+    </symbol>
+
+    <symbol id="phone" viewBox="0 0 26 26" xmlns="http://www.w3.org/2000/svg" fill="none">
+        <path d="M9.84897 5.47711L9.57462 4.85979C9.20506 4.02829 9.02028 3.61254 8.71618 3.31867C8.51546 3.12469 8.27925 2.97118 8.02047 2.86653C7.62842 2.70801 7.17345 2.70801 6.26353 2.70801C4.90865 2.70801 4.23122 2.70801 3.7034 3.03694C3.37966 3.23868 3.07005 3.58119 2.9019 3.92356C2.62773 4.4818 2.68993 5.09683 2.81431 6.32689C3.84644 16.5339 9.46598 22.1533 19.6729 23.1855C20.9029 23.3099 21.5181 23.3721 22.0763 23.0979C22.4186 22.9298 22.7612 22.6202 22.9629 22.2965C23.2918 21.7687 23.2918 21.0911 23.2918 19.7363C23.2918 18.8264 23.2918 18.3714 23.1333 17.9794C23.0287 17.7206 22.8752 17.4844 22.6811 17.2837C22.3873 16.9796 21.9715 16.7947 21.1401 16.4252L20.5227 16.1508C19.7942 15.827 19.4298 15.6652 19.0644 15.6344C18.6757 15.6017 18.2853 15.6741 17.9343 15.8442C17.6042 16.0041 17.3223 16.286 16.7585 16.8498C16.2039 17.4044 15.9265 17.6818 15.5654 17.845C15.2139 18.004 14.72 18.0716 14.3388 18.0128C13.9471 17.9525 13.6591 17.7901 13.0832 17.4653C11.0417 16.3139 9.68596 14.9581 8.53452 12.9166C8.20973 12.3407 8.04732 12.0528 7.98698 11.661C7.92827 11.2798 7.99582 10.7859 8.15475 10.4344C8.31807 10.0733 8.59539 9.79592 9.15006 9.24127C9.71384 8.67748 9.99573 8.3956 10.1556 8.06555C10.3257 7.71449 10.3982 7.32413 10.3655 6.93542C10.3347 6.56999 10.1728 6.20569 9.84897 5.47711Z" fill="currentColor"/>
+    </symbol>
+
+    <symbol id="filter" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none">
+        <path d="M2.5 5.83325H5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M2.5 14.1667H7.5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M15 14.1667H17.5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M12.5 5.83325H17.5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M10 3.33325H5V8.33325H10V3.33325Z" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M15 11.6667H10V16.6667H15V11.6667Z" stroke="currentColor" stroke-width="1.5"/>
+    </symbol>
+</svg>

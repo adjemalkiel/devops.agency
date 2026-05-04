@@ -1,0 +1,51 @@
+/* KeyShot 360 viewer (from template ai-3d.html) */
+body.ai-3d-route {
+  -ms-touch-action: auto;
+}
+
+@media (max-width: 1199px) {
+  body.ai-3d-route #KeyShotXR {
+    touch-action: auto !important;
+    pointer-events: none !important;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+}
+
+@media (min-width: 1200px) {
+  body.ai-3d-route #KeyShotXR {
+    touch-action: none;
+    cursor: grab;
+  }
+
+  body.ai-3d-route #KeyShotXR.dragging {
+    cursor: grabbing;
+  }
+}
+
+body.ai-3d-route.prevent-scroll {
+  position: fixed;
+  overflow: hidden;
+  width: 100%;
+}
+
+.ai-3d-page__nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  padding: 0.75rem 1rem;
+  background: rgba(2, 2, 2, 0.75);
+}
+
+.ai-3d-page__nav a {
+  color: #fff;
+  text-decoration: none;
+  font-family: system-ui, sans-serif;
+  font-size: 0.9rem;
+}
+
+.ai-3d-page__nav a:hover {
+  text-decoration: underline;
+}

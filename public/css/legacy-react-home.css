@@ -1,0 +1,14 @@
+/**
+ * Fixes for legacy homepage injected under React + Vite (stacking / hit targets).
+ */
+.bt-panel {
+  z-index: 200;
+}
+
+.bt-menu-item {
+  cursor: pointer;
+}
+
+.bt-menu-item a {
+  cursor: pointer;
+}

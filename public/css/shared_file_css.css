@@ -1,0 +1,19 @@
+.section:not(.marquee-logos, .marquee-tags) .h2.title p {
+    font-size: var(--text);
+    line-height: 1.3em;
+    margin-top: 20px;
+}
+
+.section:not(.marquee-logos, .marquee-tags) .h1.title p {
+    font-size: var(--text);
+    line-height: 1.3em;
+    margin-top: 20px;
+}
+
+/*.section:has(.h3.text-center.col-xl-7) + .section:has(.h4.text-center.col-xl-9) {
+    margin-top: clamp(2rem, -0.5263rem + 5.2632vw, 5rem);
+}*/
+
+.section:has(.h4.text-center.col-xl-9) {
+    margin-top: clamp(2rem, -0.5263rem + 5.2632vw, 5rem);
+}
