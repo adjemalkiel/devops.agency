@@ -24,9 +24,9 @@ export function LegacyHomePage({ markup, documentLang, pageTitle, onAfterInject 
     if (pageTitle != null && pageTitle !== '') {
       document.title = pageTitle
     } else if (documentLang === 'fr') {
-      document.title = 'DevOps Agency | Infrastructure cloud, CI/CD & plateforme'
+      document.title = 'DevOps Agence Digitale'
     } else {
-      document.title = 'DevOps Agency | Cloud infrastructure, CI/CD & platform engineering'
+      document.title = 'DevOps Agency'
     }
 
     el.innerHTML = markup.trim()
