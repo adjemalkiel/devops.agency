@@ -11,7 +11,8 @@
     "assets:sync": "node scripts/sync-template-assets.mjs",
     "assets:tech": "node scripts/ensure-tech-stack-svgs.mjs",
     "assets:all": "npm run assets:sync && npm run assets:tech",
-    "assets:redstone": "node scripts/fetch-redstone-assets.mjs"
+    "assets:redstone": "node scripts/fetch-redstone-assets.mjs",
+    "portfolio:sync": "node scripts/extract-portfolio-grid.mjs && node scripts/assemble-portfolio-main.mjs"
   },
   "dependencies": {
     "react": "^19.2.5",
