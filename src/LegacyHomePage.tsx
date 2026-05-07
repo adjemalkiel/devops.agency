@@ -34,7 +34,7 @@ export function LegacyHomePage({ markup, documentLang, pageTitle, onAfterInject 
 
     let cancelled = false
     void loadLegacyScripts().then(() => {
-      if (!cancelled) fireLegacyDomReady()
+      if (!cancelled) fireLegacyDomReady(el)
     })
 
     return () => {

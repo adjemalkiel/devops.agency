@@ -3335,38 +3335,41 @@ window.SliderConstructor = SliderConstructor;
 //*=============
 //*  OTHER JS  =
 //*=============
-// Seo block with smooth animation
-document.querySelectorAll('.seo-block').forEach(function (seoBlock) {
-    const content = seoBlock.querySelector('.seo-content');
-    const text = content ? content.querySelector('.text') : null;
-    const button = seoBlock.querySelector('.seo-btn');
+// Seo block with smooth animation (template index.html pattern). Re-run after SPA inject via _functions.reinitSeoBlocks.
+_functions.reinitSeoBlocks = function reinitSeoBlocks() {
+    document.querySelectorAll('.seo-block:not([data-seo-init])').forEach(function (seoBlock) {
+        seoBlock.setAttribute('data-seo-init', '1');
+        const content = seoBlock.querySelector('.seo-content');
+        const text = content ? content.querySelector('.text') : null;
+        const button = seoBlock.querySelector('.seo-btn');
 
-    if (!content || !text || !button) return;
+        if (!content || !text || !button) return;
 
-    const fullHeight = text.scrollHeight;
-    const minHeight = parseInt(window.getComputedStyle(content).minHeight) || 0;
+        const fullHeight = text.scrollHeight;
+        const minHeight = parseInt(window.getComputedStyle(content).minHeight, 10) || 0;
 
-    if (fullHeight <= minHeight) {
-        button.style.display = 'none';
-        return;
-    }
-
-    button.addEventListener('click', function () {
-        const isActive = this.classList.toggle('is-active');
-        const targetHeight = isActive ? fullHeight : minHeight;
-
-        // Smooth animation using CSS transitions
-        content.style.transition = 'height .5s ease';
-        content.style.height = targetHeight + 'px';
-
-        // Set height to auto after animation completes (if expanded)
-        if (isActive) {
-            setTimeout(() => {
-                content.style.height = 'auto';
-            }, 600);
+        if (fullHeight <= minHeight) {
+            button.style.display = 'none';
+            return;
         }
+
+        button.addEventListener('click', function () {
+            const isActive = this.classList.toggle('is-active');
+            const targetHeight = isActive ? fullHeight : minHeight;
+
+            content.style.transition = 'height .5s ease';
+            content.style.height = targetHeight + 'px';
+
+            if (isActive) {
+                setTimeout(function () {
+                    content.style.height = 'auto';
+                }, 600);
+            }
+        });
     });
-});
+};
+
+_functions.reinitSeoBlocks();
 
 // Marquee Logo Footer - Optimized with Drag Support
 function marqueeLogo(containerSelector = null) {
@@ -4475,7 +4478,7 @@ archiveRows.forEach(row => {
 
 // Hover Change Picture for Awards Block
 function changeAwardsImage() {
-    const awardSections = document.querySelectorAll('.award-block');
+    const awardSections = document.querySelectorAll('.award-block:not([data-awards-hover-init])');
     if (!awardSections.length) return;
 
     awardSections.forEach(awardSection => {
@@ -4483,6 +4486,8 @@ function changeAwardsImage() {
         const img = awardSection.querySelector('.award-img-wrap');
         const items = awardSection.querySelectorAll('a.award-table-tr:not(.award-table-head)');
         if (!img || !moveImg) return;
+
+        awardSection.setAttribute('data-awards-hover-init', '1');
 
         let animFrame;
         let targetX = 0, targetY = 0, currentX = 0, currentY = 0;
@@ -4531,6 +4536,7 @@ function changeAwardsImage() {
     });
 }
 
+_functions.reinitAwardHover = changeAwardsImage;
 if (winW > 1199) {
     changeAwardsImage();
 }

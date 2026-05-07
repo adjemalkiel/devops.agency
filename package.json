@@ -12,7 +12,13 @@
     "assets:tech": "node scripts/ensure-tech-stack-svgs.mjs",
     "assets:all": "npm run assets:sync && npm run assets:tech",
     "assets:redstone": "node scripts/fetch-redstone-assets.mjs",
-    "portfolio:sync": "node scripts/extract-portfolio-grid.mjs && node scripts/assemble-portfolio-main.mjs"
+    "portfolio:sync": "node scripts/extract-portfolio-grid.mjs && node scripts/assemble-portfolio-main.mjs",
+    "services:sync": "node scripts/extract-services-page.mjs && node scripts/assemble-services-main.mjs",
+    "technologies:sync": "node scripts/extract-technologies-page.mjs && node scripts/assemble-technologies-main.mjs",
+    "about:sync": "node scripts/extract-about-page.mjs && node scripts/assemble-about-main.mjs",
+    "awards:sync": "node scripts/extract-awards-page.mjs && node scripts/assemble-awards-main.mjs",
+    "contacts:sync": "node scripts/assemble-contacts-main.mjs",
+    "privacy:sync": "node scripts/assemble-privacy-main.mjs"
   },
   "dependencies": {
     "react": "^19.2.5",

@@ -1,11 +1,11 @@
 /**
  * React injects legacy HTML after app-global.js has already run its one-time
  *   document.querySelectorAll('.video') setup, so lazy-loaded video src may never be set.
- * This runs once after the legacy bundle loads.
+ * `legacyHydrateLazyVideos` runs after each legacy markup injection (see fireLegacyDomReady in the app).
  */
-;(function () {
+;(function (global) {
   function pickVideoSrc(v) {
-    const w = window.innerWidth
+    const w = global.innerWidth
     return w > 1199
       ? v.getAttribute('data-src') || v.dataset.src || ''
       : v.getAttribute('data-src-mob') || v.dataset.srcMob || ''
@@ -24,27 +24,41 @@
     if (p && typeof p.catch === 'function') p.catch(function () {})
   }
 
-  // Hero / headline: load immediately (often above the fold).
-  var hm = document.getElementById('headline-media')
-  if (hm) {
-    hm.querySelectorAll('.video').forEach(function (el) {
-      applySrcToBlock(el)
+  /**
+   * @param {ParentNode} [root] injected legacy subtree; defaults to document
+   */
+  function legacyHydrateLazyVideos(root) {
+    var scope = root && typeof root.querySelectorAll === 'function' ? root : document
+
+    function findHeadlineMedia() {
+      if (scope === document) {
+        return document.getElementById('headline-media')
+      }
+      return scope.querySelector('#headline-media') || scope.querySelector('.customer-section .headline-media')
+    }
+
+    var hm = findHeadlineMedia()
+    if (hm) {
+      hm.querySelectorAll('.video').forEach(function (el) {
+        applySrcToBlock(el)
+      })
+    }
+
+    var io = new IntersectionObserver(
+      function (entries, observer) {
+        entries.forEach(function (entry) {
+          if (!entry.isIntersecting) return
+          applySrcToBlock(entry.target)
+          observer.unobserve(entry.target)
+        })
+      },
+      { root: null, rootMargin: '50%' },
+    )
+
+    scope.querySelectorAll('.video').forEach(function (el) {
+      io.observe(el)
     })
   }
 
-  // Other videos: intersection observer (same idea as app-global videoLoad).
-  var io = new IntersectionObserver(
-    function (entries, observer) {
-      entries.forEach(function (entry) {
-        if (!entry.isIntersecting) return
-        applySrcToBlock(entry.target)
-        observer.unobserve(entry.target)
-      })
-    },
-    { root: null, rootMargin: '50%' },
-  )
-
-  document.querySelectorAll('.video').forEach(function (el) {
-    io.observe(el)
-  })
-})()
+  global.legacyHydrateLazyVideos = legacyHydrateLazyVideos
+})(typeof window !== 'undefined' ? window : this)

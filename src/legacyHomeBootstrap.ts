@@ -48,9 +48,27 @@ export function loadLegacyScripts(): Promise<void> {
   return scriptsLoaded
 }
 
-export function fireLegacyDomReady() {
+export type LegacyScope = Document | Element | DocumentFragment
+
+export function fireLegacyDomReady(scope: LegacyScope = document) {
   document.dispatchEvent(new Event('DOMContentLoaded'))
-  const w = window as Window & { _functions?: { videoSoundControl?: () => void } }
+  const w = window as Window & {
+    _functions?: {
+      videoSoundControl?: () => void
+      reinitAwardHover?: () => void
+      reinitSeoBlocks?: () => void
+    }
+    legacyHydrateLazyVideos?: (root?: LegacyScope) => void
+  }
+  if (typeof w.legacyHydrateLazyVideos === 'function') {
+    w.legacyHydrateLazyVideos(scope)
+  }
+  if (typeof w._functions?.reinitSeoBlocks === 'function') {
+    w._functions.reinitSeoBlocks()
+  }
+  if (typeof w._functions?.reinitAwardHover === 'function' && window.innerWidth > 1199) {
+    w._functions.reinitAwardHover()
+  }
   if (typeof w._functions?.videoSoundControl === 'function') {
     w._functions.videoSoundControl()
   }
